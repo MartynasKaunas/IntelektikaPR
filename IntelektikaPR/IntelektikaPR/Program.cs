@@ -34,6 +34,8 @@ namespace IntelektikaPR
         static string testpath8 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_8");
         static string testpath9 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_9");
 
+
+        //metodo 1 simbolių "heatmap" matricos
         static double[,] Digit0;
         static double[,] Digit1;
         static double[,] Digit2;
@@ -45,6 +47,7 @@ namespace IntelektikaPR
         static double[,] Digit8;
         static double[,] Digit9;
 
+        //į kokį dydį performuojami paveiksliukai
         static int convWidth = 16;
         static int convHeigth = 16;
 
@@ -52,21 +55,25 @@ namespace IntelektikaPR
         static Color colorWhite = Color.FromArgb(255, 255, 255, 255);
         static double BW_THRESHOLD = 0.5;
         static List<Vertex> vertices = new List<Vertex>();
-
-        public class Vertex
+        
+        static void Main(string[] args)
         {
-            public Vertex(int i, int j)
+            List<double> result = XValidation(5, data);
+            Console.WriteLine("Kryžminės patikros rezultatai:");
+            int i = 0;
+            foreach( double value in result)
             {
-                this.X = i;
-                this.Y = j;
+                Console.WriteLine((i+1) + " kryžminės patikros bendras tikslumas: " + string.Format("{0:F1}", value) + " %");
+                i++;
             }
-            public int X { get; set; }
-            public int Y { get; set; }
-            public string ToString()
-            {
-                return string.Format("({0}/{1})", this.X, this.Y);
-            }
+
+            Console.ReadLine();
         }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+        //METODAS SU MOKYTOJU 1 BEGIN
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+
         // Vykdoma kryžminė patikra
         public static List<double> XValidation(int dataSetCount, string data)
         {
@@ -89,7 +96,7 @@ namespace IntelektikaPR
             //Pradedamas apmokymas
             for (int i = 0; i < dataSetCount; i++)
             {
-                Console.WriteLine("Vykdoma " + (i+1) + " kryžminės patikros iteracija.");
+                Console.WriteLine("Vykdoma " + (i + 1) + " kryžminės patikros iteracija.");
                 List<List<string>> temp = new List<List<string>>();
                 for (int j = 0; j < 10; j++)
                 {
@@ -138,22 +145,11 @@ namespace IntelektikaPR
                     // Ciklas keliauja per j - tojo skaitmens paveikslėlių sąrašą
                     int step2 = step;
                     if (i >= dataSetCount - 1) step2 = listList[j].ToList().Count - start;
-                    foreach( string fpath in listList[j].GetRange(start, step2))
+                    foreach (string fpath in listList[j].GetRange(start, step2))
                     {
                         count++;
-                        Bitmap og = new Bitmap(fpath);
-                        Bitmap conv = new Bitmap(convWidth, convHeigth);
-                        using (Graphics gr = Graphics.FromImage(conv))
-                        {
-                            gr.SmoothingMode = SmoothingMode.HighQuality;
-                            gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
-                        }
-                        conv = ImageToBlackWhite(conv, BW_THRESHOLD);
-                        conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-                        double[,] img = ImageToMatrix(conv);
-                        //img = CutMatrix(img);
+
+                        double[,] img = processImage(fpath);
 
                         //Atlieka skaitmens testavimą
                         string rez = Testing(img, Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9);
@@ -180,147 +176,19 @@ namespace IntelektikaPR
             return result;
         }
 
-        static void Main(string[] args)
-        {
-            List<double> result = XValidation(5, data);
-            Console.WriteLine("Kryžminės patikros rezultatai:");
-            int i = 0;
-            foreach( double value in result)
-            {
-                Console.WriteLine((i+1) + " kryžminės patikros bendras tikslumas: " + string.Format("{0:F1}", value) + " %");
-                i++;
-            }
 
-            Console.ReadLine();
-        }
-
+        //
         public static double[,] TrainSymbolMatrix(double[,] symbolmatrix, List<string> trainpath)
         {
-            Bitmap originalImage = new Bitmap(trainpath[0]);
-            Bitmap conv2 = new Bitmap(convWidth, convHeigth);
-            using (Graphics gr = Graphics.FromImage(conv2))
-            {
-                gr.SmoothingMode = SmoothingMode.HighQuality;
-                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                gr.DrawImage(originalImage, new Rectangle(0, 0, convWidth, convHeigth));
-            }
-            conv2 = ImageToBlackWhite(conv2, BW_THRESHOLD);
-            conv2.RotateFlip(RotateFlipType.Rotate270FlipY);
-            double[,] imgMatrix = ImageToMatrix(conv2);
-            symbolmatrix = imgMatrix;
+            symbolmatrix = processImage(trainpath[0]);
+
             foreach (string fpath in trainpath)
             {
-                Bitmap og = new Bitmap(fpath);
-                Bitmap conv = new Bitmap(convWidth, convHeigth);
-                using (Graphics gr = Graphics.FromImage(conv))
-                {
-                    gr.SmoothingMode = SmoothingMode.HighQuality;
-                    gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
-                }
-                conv = ImageToBlackWhite(conv, BW_THRESHOLD);
-                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-                double[,] img = ImageToMatrix(conv);
-                //img = CutMatrix(img);
-
+                double[,] img = processImage(fpath);
                 symbolmatrix = Training(img, symbolmatrix);
             }
 
             return symbolmatrix;
-        }
-
-        public static double[,] processImage(string fpath)
-        {
-            Bitmap og = new Bitmap(fpath);
-            Bitmap conv = new Bitmap(convWidth, convHeigth);
-            using (Graphics gr = Graphics.FromImage(conv))
-            {
-                gr.SmoothingMode = SmoothingMode.HighQuality;
-                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
-            }
-            conv = ImageToBlackWhite(conv, BW_THRESHOLD);
-            conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-            double[,] img = ImageToMatrix(conv);
-            //img = CutMatrix(img);
-            return img;
-        }
-
-        //Paverčia visus pilkus pixelius juodais arba baltais pagal slenksčio reikšmę
-        public static Bitmap ImageToBlackWhite(Bitmap imgSrc, double threshold){
-            int width = imgSrc.Width;
-            int height = imgSrc.Height;
-            Color pixel;
-            Bitmap imgOut = new Bitmap(imgSrc);
-            for (int row = 0; row < height - 1; row++)
-            {
-                for (int col = 0; col < width - 1; col++)
-                {
-                    pixel = imgSrc.GetPixel(col, row);
-                    if (pixel.GetBrightness() < threshold)
-                    {
-                        vertices.Add(new Vertex(col, row));
-                        imgOut.SetPixel(col, row, colorBlack);
-                    }
-                    else
-                    {
-                        imgOut.SetPixel(col, row, colorWhite);
-                    }
-                }
-            }
-            return imgOut;
-        }
-
-        //Konvertuoja juodą/baltą paveiksliuką į 0/1 matricą
-        public static double[,] ImageToMatrix(Bitmap img){
-            int height = img.Height;
-            int width = img.Width;
-
-            double[,] Matrix = new double[convWidth, convHeigth];
-
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    if (img.GetPixel(i, j).Equals(colorBlack))
-                    {
-                        Matrix[i, j] = 0;
-                    }
-                    else if (img.GetPixel(i, j).Equals(colorWhite))
-                    {
-                        Matrix[i, j] = 1;
-                    }
-                }
-            }
-            return Matrix;
-        }
-
-        //Nukerpa tuščius 2px nuo kiekvieno krašto
-        public static double[,] CutMatrix(double[,] matrix){
-            double[,] newmatrix = new double[convWidth-2, convHeigth-2];
-
-            for (int i = 2; i < matrix.GetLength(0) - 2; i++)
-            {
-                for (int j = 2; j < matrix.GetLength(1) - 2; j++)
-                {
-                    newmatrix[i - 2, j - 2] = matrix[i, j];
-                }              
-            }
-
-            return newmatrix;
-        }
-
-        //spausdina 0/1 matricą
-        public static void PrintMatrix(double[,] matrix){
-            for (int i = 0; i < matrix.GetLength(0); i++){
-                for (int j = 0; j < matrix.GetLength(1); j++){
-                    Console.Write(string.Format("{0}", matrix[i, j]));
-                }
-                Console.Write(Environment.NewLine + Environment.NewLine);
-            }
         }
 
         //Apmokymas. Gaunam svorinę matricą. "Kaip atrodo simbolis".Kuo daugiau kartų tame pikselyje buvo balta - tuo didesnis skaičius
@@ -344,13 +212,13 @@ namespace IntelektikaPR
         {
             int[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             string[] results = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-            int riba = 300;
+            int riba = 300; //kiek baltos spalvos pasikartojimų heatmap'e skaitosi kaip "atitikimas" 
 
             for (int i = 0; i < testmatrix.GetLength(0); i++)
             {
                 for (int j = 0; j < testmatrix.GetLength(1); j++)
                 {
-                    if ((SymbolMatrix0[i, j] >= riba) && (testmatrix[i, j] == 1)){     //>=800 tai random parinkta svorio slenksčio reikšmė Paėmiau (failų skaičių apmokymo folderį)/2
+                    if ((SymbolMatrix0[i, j] >= riba) && (testmatrix[i, j] == 1)){ 
                         scores[0] += 1;                      
                     }
                     if ((SymbolMatrix1[i, j] >= riba) && (testmatrix[i, j] == 1)){
@@ -395,5 +263,133 @@ namespace IntelektikaPR
 
             return results[maxIndex];
         }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+        //METODAS SU MOKYTOJU 1 END
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+        //DUOMENŲ TVARKYMAS BEGIN
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+        // Paima paveikslėlį iš failo, sumažina, pilkus pixelius padaro juodais/baltais, konvertuoaj į 0/1 matricą, yra galimybė apkarpyti
+        public static double[,] processImage(string fpath)
+        {
+            Bitmap og = new Bitmap(fpath);                                 //Paima iš failo
+            Bitmap conv = new Bitmap(convWidth, convHeigth);               //Sumažina
+            using (Graphics gr = Graphics.FromImage(conv))                 
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
+            }
+            conv = ImageToBlackWhite(conv, BW_THRESHOLD);                   //Pilkus pixelius -> juodus/baltus
+            conv.RotateFlip(RotateFlipType.Rotate270FlipY);
+            double[,] img = ImageToMatrix(conv);                            //konvertuoja į 0/1 matricą
+            //img = CutMatrix(img);                                         //apkarpo -2px nuo kiekvieno krašto
+            return img;
+        }
+
+        //Paverčia visus pilkus pixelius juodais arba baltais pagal slenksčio reikšmę
+        public static Bitmap ImageToBlackWhite(Bitmap imgSrc, double threshold)
+        {
+            int width = imgSrc.Width;
+            int height = imgSrc.Height;
+            Color pixel;
+            Bitmap imgOut = new Bitmap(imgSrc);
+            for (int row = 0; row < height - 1; row++)
+            {
+                for (int col = 0; col < width - 1; col++)
+                {
+                    pixel = imgSrc.GetPixel(col, row);
+                    if (pixel.GetBrightness() < threshold)
+                    {
+                        vertices.Add(new Vertex(col, row));
+                        imgOut.SetPixel(col, row, colorBlack);
+                    }
+                    else
+                    {
+                        imgOut.SetPixel(col, row, colorWhite);
+                    }
+                }
+            }
+            return imgOut;
+        }
+
+        //Konvertuoja juodą/baltą paveiksliuką į 0/1 matricą
+        public static double[,] ImageToMatrix(Bitmap img)
+        {
+            int height = img.Height;
+            int width = img.Width;
+
+            double[,] Matrix = new double[convWidth, convHeigth];
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    if (img.GetPixel(i, j).Equals(colorBlack))
+                    {
+                        Matrix[i, j] = 0;
+                    }
+                    else if (img.GetPixel(i, j).Equals(colorWhite))
+                    {
+                        Matrix[i, j] = 1;
+                    }
+                }
+            }
+            return Matrix;
+        }
+
+        //Nukerpa tuščius 2px nuo kiekvieno krašto
+        public static double[,] CutMatrix(double[,] matrix)
+        {
+            double[,] newmatrix = new double[convWidth - 2, convHeigth - 2];
+
+            for (int i = 2; i < matrix.GetLength(0) - 2; i++)
+            {
+                for (int j = 2; j < matrix.GetLength(1) - 2; j++)
+                {
+                    newmatrix[i - 2, j - 2] = matrix[i, j];
+                }
+            }
+
+            return newmatrix;
+        }
+
+        //spausdina 0/1 matricą
+        public static void PrintMatrix(double[,] matrix)
+        {
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write(string.Format("{0}", matrix[i, j]));
+                }
+                Console.Write(Environment.NewLine + Environment.NewLine);
+            }
+        }
+
+        public class Vertex
+        {
+            public Vertex(int i, int j)
+            {
+                this.X = i;
+                this.Y = j;
+            }
+            public int X { get; set; }
+            public int Y { get; set; }
+            public string ToString()
+            {
+                return string.Format("({0}/{1})", this.X, this.Y);
+            }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+        //DUOMENŲ TVARKYMAS END
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+
     }
 }
