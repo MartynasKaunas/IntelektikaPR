@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 namespace IntelektikaPR
 {
     class Program
     {
+        static string data = Path.Combine(Environment.CurrentDirectory, @"Data\Data");
         static string trainpath0 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_0");
         static string trainpath1 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_1");
         static string trainpath2 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_2");
@@ -43,6 +45,9 @@ namespace IntelektikaPR
         static double[,] Digit8;
         static double[,] Digit9;
 
+        static int convWidth = 16;
+        static int convHeigth = 16;
+
         static Color colorBlack = Color.FromArgb(255, 0, 0, 0);
         static Color colorWhite = Color.FromArgb(255, 255, 255, 255);
         static double BW_THRESHOLD = 0.5;
@@ -62,131 +67,163 @@ namespace IntelektikaPR
                 return string.Format("({0}/{1})", this.X, this.Y);
             }
         }
+        // Vykdoma kryžminė patikra
+        public static List<double> XValidation(int dataSetCount, string data)
+        {
+            List<double> result = new List<double>();
+            int start = 0; // testuojamų duomenų pradžios indeksas
+            int step = (int)(2000.0 / dataSetCount); // testuojamų duomenų indekso žingsnis tarp iteracijų
+            int end = (int)(2000.0 / dataSetCount); // testuojamų duomenų pabaigos indeksas
+            List<List<string>> listList = new List<List<string>>();
+            // Surašomi failų pavadinimai į sąrašą. Sąrašas saugo kiekvieno skaitmens paveikslėlių sąrašą (kelius (path) iki paveikslėlių).
+            for (int i = 0; i < 10; i++)
+            {
+                List<string> list = new List<string>();
+                foreach (string fpath in Directory.GetFiles(Path.Combine(data, "digit_" + i), "*.png"))
+                {
+                    list.Add(fpath);
+                }
+                listList.Add(list);
+            }
+
+            //Pradedamas apmokymas
+            for (int i = 0; i < dataSetCount; i++)
+            {
+                Console.WriteLine("Vykdoma " + (i+1) + " kryžminės patikros iteracija.");
+                List<List<string>> temp = new List<List<string>>();
+                for (int j = 0; j < 10; j++)
+                {
+                    List<string> t = listList[j].ToList();
+                    temp.Add(t);
+                }
+                if (i < dataSetCount - 1)
+                {
+                    //Pašalinami testuojami duomenys iš apmokymo sąrašo, kai i < kryž. patikros iteracijų sk. - 1
+                    foreach (List<string> list in temp)
+                    {
+                        list.RemoveRange(start, step);
+                    }
+                }
+                else
+                {
+                    //Pašalinami testuojami duomenys iš apmokymo sąrašo, kai i == kryž. patikros iteracijų sk. - 1
+                    foreach (List<string> list in temp)
+                    {
+                        list.RemoveRange(start, list.Count - start);
+                    }
+                }
+                // Pradedamas apmokymas
+                Digit0 = Digit1 = Digit2 = Digit3 = Digit4 = Digit5 = Digit6 = Digit7 = Digit8 = Digit9 = null;
+                Digit0 = TrainSymbolMatrix(Digit0, temp[0]);
+                Digit1 = TrainSymbolMatrix(Digit1, temp[1]);
+                Digit2 = TrainSymbolMatrix(Digit2, temp[2]);
+                Digit3 = TrainSymbolMatrix(Digit3, temp[3]);
+                Digit4 = TrainSymbolMatrix(Digit4, temp[4]);
+                Digit5 = TrainSymbolMatrix(Digit5, temp[5]);
+                Digit6 = TrainSymbolMatrix(Digit6, temp[6]);
+                Digit7 = TrainSymbolMatrix(Digit7, temp[7]);
+                Digit8 = TrainSymbolMatrix(Digit8, temp[8]);
+                Digit9 = TrainSymbolMatrix(Digit9, temp[9]);
+
+                int corr = 0; // teisingų spėjimų kiekis
+                int count = 0; // bendras spėjimų kiekis
+
+                double[] foldresults = new double[10];
+
+                // Vykdoma kryžminė patikra. Ciklas keliauja per sąrašo skaičius (0-9)
+                for (int j = 0; j < 10; j++)
+                {
+                    corr = 0; // teisingų spėjimų kiekis
+                    count = 0; // bendras spėjimų kiekis
+                    // Ciklas keliauja per j - tojo skaitmens paveikslėlių sąrašą
+                    int step2 = step;
+                    if (i >= dataSetCount - 1) step2 = listList[j].ToList().Count - start;
+                    foreach( string fpath in listList[j].GetRange(start, step2))
+                    {
+                        count++;
+                        Bitmap og = new Bitmap(fpath);
+                        Bitmap conv = new Bitmap(convWidth, convHeigth);
+                        using (Graphics gr = Graphics.FromImage(conv))
+                        {
+                            gr.SmoothingMode = SmoothingMode.HighQuality;
+                            gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                            gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
+                        }
+                        conv = ImageToBlackWhite(conv, BW_THRESHOLD);
+                        conv.RotateFlip(RotateFlipType.Rotate270FlipY);
+                        double[,] img = ImageToMatrix(conv);
+                        //img = CutMatrix(img);
+
+                        //Atlieka skaitmens testavimą
+                        string rez = Testing(img, Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9);
+                        if (rez == "" + j) corr++;
+                    }
+                    Console.WriteLine("Skaitmens " + j + " atpažinimo tikslumas: " + string.Format("{0:F1} %", (double)corr / count * 100));
+                    foldresults[j] = (double)corr / count * 100;
+                    Console.WriteLine(corr + " " + count);
+                }
+                double sum = 0;
+                for (int z = 0; z < foldresults.Length; z++)
+                {
+                    sum += foldresults[z];
+                }
+                double acc = (double)sum / foldresults.Length;
+                result.Add(acc);
+                Console.WriteLine("Tikslumas: " + string.Format("{0:F1} %", acc));
+                Console.WriteLine("------------------------------------------------------------------------");
+                Console.WriteLine();
+                // Paslenkama testuojamų duomenų pradžios bei pabaigos indeksas
+                start = start + step;
+                end = end + step;
+            }
+            return result;
+        }
 
         static void Main(string[] args)
         {
-            // TEST
-            string filename = @"test.png";
-            string path = Path.Combine(Environment.CurrentDirectory, @"Data\", filename);
-
-            Bitmap originalImage = new Bitmap(path);
-            Bitmap convertedImage = ImageToBlackWhite(originalImage, BW_THRESHOLD);  // palieka tik juodus ir baltus pixelius
-            convertedImage.Save(@"Data\BWtest.png");
-
-            convertedImage.RotateFlip(RotateFlipType.Rotate270FlipY);
-
-            double[,] imgMatrix = ImageToMatrix(convertedImage);   //paverčia paveikliuką į matricą, kur pixeliai balta - 1 juoda - 0       
-            imgMatrix = CutMatrix(imgMatrix);
-
-            Console.WriteLine("RANDOM SIMBOLIO PAVERTIMO I MATRICA IR APKARPYMO BANDYMAS");
-            PrintMatrix(imgMatrix);
-            //TEST
-
-            //APMOKYMAS
-            filename = @"4558.png";
-            Digit0 = TrainSymbolMatrix(Digit0, trainpath0, filename);
-
-            filename = @"4732.png";
-            Digit1 = TrainSymbolMatrix(Digit1, trainpath1, filename);
-
-            filename = @"4885.png";
-            Digit2 = TrainSymbolMatrix(Digit2, trainpath2, filename);
-
-            filename = @"5109.png";
-            Digit3 = TrainSymbolMatrix(Digit3, trainpath3, filename);
-
-            filename = @"5265.png";
-            Digit4 = TrainSymbolMatrix(Digit4, trainpath4, filename);
-
-            filename = @"5411.png";
-            Digit5 = TrainSymbolMatrix(Digit5, trainpath5, filename);
-
-            filename = @"5549.png";
-            Digit6 = TrainSymbolMatrix(Digit6, trainpath6, filename);
-
-            filename = @"5691.png";
-            Digit7 = TrainSymbolMatrix(Digit7, trainpath7, filename);
-
-            filename = @"5820.png";
-            Digit8 = TrainSymbolMatrix(Digit8, trainpath8, filename);
-
-            filename = @"7259.png";
-            Digit9 = TrainSymbolMatrix(Digit9, trainpath9, filename);
-
-            //TESTAVIMAS
-            int teisingai = 0;
-            foreach (string fpath in Directory.GetFiles(testpath0, "*.png"))
+            List<double> result = XValidation(5, data);
+            Console.WriteLine("Kryžminės patikros rezultatai:");
+            int i = 0;
+            foreach( double value in result)
             {
-                Bitmap og = new Bitmap(fpath);
-                Bitmap conv = ImageToBlackWhite(og, BW_THRESHOLD);
-                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-                double[,] img = ImageToMatrix(conv);
-                img = CutMatrix(img);
-
-                string rez = Testing(img, Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9);
-                if (rez == "0") teisingai++;        
+                Console.WriteLine((i+1) + " kryžminės patikros bendras tikslumas: " + string.Format("{0:F1}", value) + " %");
+                i++;
             }
 
-            Console.WriteLine("Digit 0 atpažinimas:");
-            Console.WriteLine("tikslumas = " + teisingai + " / 300");
-
-            //TESTAVIMAS2
-            teisingai = 0;
-            foreach (string fpath in Directory.GetFiles(testpath5, "*.png"))
-            {
-                Bitmap og = new Bitmap(fpath);
-                Bitmap conv = ImageToBlackWhite(og, BW_THRESHOLD);
-                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-                double[,] img = ImageToMatrix(conv);
-                img = CutMatrix(img);
-
-                string rez = Testing(img, Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9);
-                if (rez == "5") teisingai++;
-            }
-
-            Console.WriteLine("Digit 5 atpažinimas:");
-            Console.WriteLine("tikslumas = " + teisingai + " / 300");
-
-            //TESTAVIMAS3
-            teisingai = 0;
-            foreach (string fpath in Directory.GetFiles(testpath9, "*.png"))
-            {
-                Bitmap og = new Bitmap(fpath);
-                Bitmap conv = ImageToBlackWhite(og, BW_THRESHOLD);
-                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-                double[,] img = ImageToMatrix(conv);
-                img = CutMatrix(img);
-
-                string rez = Testing(img, Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9);
-                if (rez == "9") teisingai++;
-            }
-
-            Console.WriteLine("Digit 9 atpažinimas:");
-            Console.WriteLine("tikslumas = " + teisingai + " / 300");
             Console.ReadLine();
-
         }
 
-        public static double[,] TrainSymbolMatrix(double[,] symbolmatrix, string trainpath, string filename)
+        public static double[,] TrainSymbolMatrix(double[,] symbolmatrix, List<string> trainpath)
         {
-            string path = Path.Combine(trainpath, filename);
-            Bitmap originalImage = new Bitmap(path);
-            Bitmap convertedImage = ImageToBlackWhite(originalImage, BW_THRESHOLD);
-            convertedImage.RotateFlip(RotateFlipType.Rotate270FlipY);
-            double[,] imgMatrix = ImageToMatrix(convertedImage);
-            imgMatrix = CutMatrix(imgMatrix);
+            Bitmap originalImage = new Bitmap(trainpath[0]);
+            Bitmap conv2 = new Bitmap(convWidth, convHeigth);
+            using (Graphics gr = Graphics.FromImage(conv2))
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.DrawImage(originalImage, new Rectangle(0, 0, convWidth, convHeigth));
+            }
+            conv2 = ImageToBlackWhite(conv2, BW_THRESHOLD);
+            conv2.RotateFlip(RotateFlipType.Rotate270FlipY);
+            double[,] imgMatrix = ImageToMatrix(conv2);
             symbolmatrix = imgMatrix;
-
-            Console.WriteLine();
-            PrintMatrix(symbolmatrix);
-
-            foreach (string fpath in Directory.GetFiles(trainpath, "*.png"))
+            foreach (string fpath in trainpath)
             {
                 Bitmap og = new Bitmap(fpath);
-                Bitmap conv = ImageToBlackWhite(og, BW_THRESHOLD);
+                Bitmap conv = new Bitmap(convWidth, convHeigth);
+                using (Graphics gr = Graphics.FromImage(conv))
+                {
+                    gr.SmoothingMode = SmoothingMode.HighQuality;
+                    gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
+                }
+                conv = ImageToBlackWhite(conv, BW_THRESHOLD);
                 conv.RotateFlip(RotateFlipType.Rotate270FlipY);
                 double[,] img = ImageToMatrix(conv);
-                img = CutMatrix(img);
+                //img = CutMatrix(img);
 
                 symbolmatrix = Training(img, symbolmatrix);
             }
@@ -197,10 +234,18 @@ namespace IntelektikaPR
         public static double[,] processImage(string fpath)
         {
             Bitmap og = new Bitmap(fpath);
-            Bitmap conv = ImageToBlackWhite(og, BW_THRESHOLD);
+            Bitmap conv = new Bitmap(convWidth, convHeigth);
+            using (Graphics gr = Graphics.FromImage(conv))
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
+            }
+            conv = ImageToBlackWhite(conv, BW_THRESHOLD);
             conv.RotateFlip(RotateFlipType.Rotate270FlipY);
             double[,] img = ImageToMatrix(conv);
-            img = CutMatrix(img);
+            //img = CutMatrix(img);
             return img;
         }
 
@@ -234,7 +279,7 @@ namespace IntelektikaPR
             int height = img.Height;
             int width = img.Width;
 
-            double[,] Matrix = new double[32, 32];
+            double[,] Matrix = new double[convWidth, convHeigth];
 
             for (int i = 0; i < width; i++)
             {
@@ -255,7 +300,7 @@ namespace IntelektikaPR
 
         //Nukerpa tuščius 2px nuo kiekvieno krašto
         public static double[,] CutMatrix(double[,] matrix){
-            double[,] newmatrix = new double[28, 28];
+            double[,] newmatrix = new double[convWidth-2, convHeigth-2];
 
             for (int i = 2; i < matrix.GetLength(0) - 2; i++)
             {
@@ -281,7 +326,7 @@ namespace IntelektikaPR
         //Apmokymas. Gaunam svorinę matricą. "Kaip atrodo simbolis".Kuo daugiau kartų tame pikselyje buvo balta - tuo didesnis skaičius
         public static double[,] Training(double[,] trainmatrix, double[,] finalMatrix)
         {
-            double[,] newFinalmatrix = new double[28, 28];
+            double[,] newFinalmatrix = new double[convWidth, convHeigth];
 
             for (int i = 0; i < trainmatrix.GetLength(0); i++)
             {
@@ -299,46 +344,47 @@ namespace IntelektikaPR
         {
             int[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             string[] results = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            int riba = 300;
 
             for (int i = 0; i < testmatrix.GetLength(0); i++)
             {
                 for (int j = 0; j < testmatrix.GetLength(1); j++)
                 {
-                    if ((SymbolMatrix0[i, j] >= 500) && (testmatrix[i, j] == 1)){     //>=800 tai random parinkta svorio slenksčio reikšmė Paėmiau (failų skaičių apmokymo folderį)/2
+                    if ((SymbolMatrix0[i, j] >= riba) && (testmatrix[i, j] == 1)){     //>=800 tai random parinkta svorio slenksčio reikšmė Paėmiau (failų skaičių apmokymo folderį)/2
                         scores[0] += 1;                      
                     }
-                    if ((SymbolMatrix1[i, j] >= 500) && (testmatrix[i, j] == 1)){
+                    if ((SymbolMatrix1[i, j] >= riba) && (testmatrix[i, j] == 1)){
                         scores[1] += 1;
                     }
-                    if ((SymbolMatrix2[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix2[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[2] += 1;
                     }
-                    if ((SymbolMatrix3[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix3[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[3] += 1;
                     }
-                    if ((SymbolMatrix4[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix4[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[4] += 1;
                     }
-                    if ((SymbolMatrix5[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix5[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[5] += 1;
                     }
-                    if ((SymbolMatrix6[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix6[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[6] += 1;
                     }
-                    if ((SymbolMatrix7[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix7[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[7] += 1;
                     }
-                    if ((SymbolMatrix8[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix8[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[8] += 1;
                     }
-                    if ((SymbolMatrix9[i, j] >= 500) && (testmatrix[i, j] == 1))
+                    if ((SymbolMatrix9[i, j] >= riba) && (testmatrix[i, j] == 1))
                     {
                         scores[9] += 1;
                     }

@@ -5,3 +5,10 @@ C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\Projektas\Intelekti
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CoreCompileInputs.cache
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.exe
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.pdb
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.exe.config
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.exe
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.pdb
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csprojAssemblyReference.cache
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.exe
+C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.pdb
