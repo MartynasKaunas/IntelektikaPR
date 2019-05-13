@@ -1,8 +1,7 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Drawing2D;
@@ -11,29 +10,8 @@ namespace IntelektikaPR
 {
     class Program
     {
-        static string data = Path.Combine(Environment.CurrentDirectory, @"Data\Data");
-        static string trainpath0 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_0");
-        static string trainpath1 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_1");
-        static string trainpath2 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_2");
-        static string trainpath3 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_3");
-        static string trainpath4 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_4");
-        static string trainpath5 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_5");
-        static string trainpath6 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_6");
-        static string trainpath7 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_7");
-        static string trainpath8 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_8");
-        static string trainpath9 = Path.Combine(Environment.CurrentDirectory, @"Data\Train\digit_9");
-
-        static string testpath0 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_0");
-        static string testpath1 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_1");
-        static string testpath2 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_2");
-        static string testpath3 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_3");
-        static string testpath4 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_4");
-        static string testpath5 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_5");
-        static string testpath6 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_6");
-        static string testpath7 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_7");
-        static string testpath8 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_8");
-        static string testpath9 = Path.Combine(Environment.CurrentDirectory, @"Data\Test\digit_9");
-
+        private static readonly string TrainigData = Path.Combine(Environment.CurrentDirectory, @"Data\Data");
+        private static readonly string TestData = Path.Combine(Environment.CurrentDirectory, @"Data\Test");
 
         //metodo 1 simbolių "heatmap" matricos
         static double[,] Digit0;
@@ -48,26 +26,109 @@ namespace IntelektikaPR
         static double[,] Digit9;
 
         //į kokį dydį performuojami paveiksliukai
-        static int convWidth = 16;
+        private const int ConvWidth = 16;
         static int convHeigth = 16;
 
-        static Color colorBlack = Color.FromArgb(255, 0, 0, 0);
-        static Color colorWhite = Color.FromArgb(255, 255, 255, 255);
-        static double BW_THRESHOLD = 0.5;
-        static List<Vertex> vertices = new List<Vertex>();
-        
+        static readonly Color ColorBlack = Color.FromArgb(255, 0, 0, 0);
+        static readonly Color ColorWhite = Color.FromArgb(255, 255, 255, 255);
+        private const double BwThreshold = 0.5;
+        private static readonly List<Vertex> vertices = new List<Vertex>();
+
         static void Main(string[] args)
         {
-            List<double> result = XValidation(5, data);
+            Console.Read();
+            NeuralNetworkTests();
+            Console.Read();
+
+            return;
+            List<double> result = XValidation(5, TrainigData);
             Console.WriteLine("Kryžminės patikros rezultatai:");
             int i = 0;
-            foreach( double value in result)
+            foreach (double value in result)
             {
-                Console.WriteLine((i+1) + " kryžminės patikros bendras tikslumas: " + string.Format("{0:F1}", value) + " %");
+                Console.WriteLine((i + 1) + " kryžminės patikros bendras tikslumas: " + string.Format("{0:F1}", value) + " %");
                 i++;
             }
 
             Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Performs the Neural Netowrk tests.
+        /// </summary>
+        public static void NeuralNetworkTests()
+        {
+            // Read the trainig data.
+            Console.WriteLine("Reading input data.");
+            var inputData = ReadAllFolders(TrainigData)
+                .OrderBy(o => Guid.NewGuid()) // Scramble the list
+                .ToArray(); // Execute the request
+
+            // Prepare data for the neural network.
+            var outputVector = inputData.Select(d => d.Key)
+                .Select(iValue => // Create a key array, with index of the key having value 1, rest = 0.
+                {
+                    var a = new double[10];
+                    a[iValue] = 1;
+                    return a;
+                }).ToArray();
+            var inputVector = inputData.Select(d => d.Value.ToDoubleArray())
+                .ToArray(); // Create a value array, with having appropriate indexes.
+
+            // Create a neural network
+            var network = new NeuralNetwork(inputVector, outputVector);
+
+            // Execute the learning process
+            network.Teach();
+
+            // Read the test data.
+            Console.WriteLine("Reading output data.");
+            var outputData = ReadAllFolders(TestData);
+
+            // Print out the result.
+            var correctCount = outputData.Count(testData => testData.Key == network.Compute(testData.Value));
+            Console.WriteLine($"Network accuracy: [{correctCount} / {outputData.Length}] - {(double)correctCount / outputData.Length * 100}%");
+        }
+
+        /// <summary>
+        /// Reads all of the contents of a given folder and creates an array of Key - Image pairings
+        /// </summary>
+        /// <returns>An array of Key-Image pairings. Key is int - image's true number</returns>
+        public static KeyValuePair<int, Image>[] ReadAllFolders(string folderPath)
+        {
+            var index = 0;
+            var inputData = Enumerable.Empty<KeyValuePair<int, Image>>();
+            foreach (var directory in Directory.EnumerateDirectories(folderPath))
+            {
+                inputData = inputData.Concat(ReadFolder(directory) // Read the contents and concatinate the image data.
+                        .Select(f => new KeyValuePair<int, Image>(index, f))) // Attach an index to a given image, i.e. 2 = file in directory no.2
+                    .ToArray(); // Execute the request immedietly.
+                index++;
+                Console.WriteLine($"{index * 10}%");
+            }
+
+            return (KeyValuePair<int, Image>[])inputData;
+        }
+
+        /// <summary>
+        /// Reads folder data for images
+        /// </summary>
+        /// <param name="folderPath">Path to search for images</param>
+        /// <returns>List of Images in the given folder.</returns>
+        public static IEnumerable<Image> ReadFolder(string folderPath)
+        {
+            var rect = new Rectangle(2, 2, 28, 28);
+#if DEBUG
+            var index = 0;
+#endif
+            foreach (var filePath in Directory.EnumerateFiles(folderPath))
+            {
+#if DEBUG
+                if (index++ >= 200) continue;
+#endif
+                var bitmap = new Bitmap(filePath);
+                yield return new Image(bitmap.Clone(rect, bitmap.PixelFormat));
+            }
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------------
@@ -142,7 +203,7 @@ namespace IntelektikaPR
                 {
                     corr = 0; // teisingų spėjimų kiekis
                     count = 0; // bendras spėjimų kiekis
-                    // Ciklas keliauja per j - tojo skaitmens paveikslėlių sąrašą
+                               // Ciklas keliauja per j - tojo skaitmens paveikslėlių sąrašą
                     int step2 = step;
                     if (i >= dataSetCount - 1) step2 = listList[j].ToList().Count - start;
                     foreach (string fpath in listList[j].GetRange(start, step2))
@@ -155,7 +216,7 @@ namespace IntelektikaPR
                         string rez = Testing(img, Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9);
                         if (rez == "" + j) corr++;
                     }
-                    Console.WriteLine("Skaitmens " + j + " atpažinimo tikslumas: " + string.Format("{0:F1} %", (double)corr / count * 100));
+                    Console.WriteLine("Skaitmens " + j + " atpažinimo tikslumas: " + $"{(double)corr / count * 100:F1} %");
                     foldresults[j] = (double)corr / count * 100;
                     Console.WriteLine(corr + " " + count);
                 }
@@ -164,7 +225,7 @@ namespace IntelektikaPR
                 {
                     sum += foldresults[z];
                 }
-                double acc = (double)sum / foldresults.Length;
+                double acc = sum / foldresults.Length;
                 result.Add(acc);
                 Console.WriteLine("Tikslumas: " + string.Format("{0:F1} %", acc));
                 Console.WriteLine("------------------------------------------------------------------------");
@@ -194,7 +255,7 @@ namespace IntelektikaPR
         //Apmokymas. Gaunam svorinę matricą. "Kaip atrodo simbolis".Kuo daugiau kartų tame pikselyje buvo balta - tuo didesnis skaičius
         public static double[,] Training(double[,] trainmatrix, double[,] finalMatrix)
         {
-            double[,] newFinalmatrix = new double[convWidth, convHeigth];
+            double[,] newFinalmatrix = new double[ConvWidth, convHeigth];
 
             for (int i = 0; i < trainmatrix.GetLength(0); i++)
             {
@@ -203,7 +264,7 @@ namespace IntelektikaPR
                     newFinalmatrix[i, j] = Math.Round((trainmatrix[i, j] + finalMatrix[i, j]));
                 }
             }
-            return newFinalmatrix;       
+            return newFinalmatrix;
         }
 
         //Testavimas, tikrinama, kurią apmokymo metu gautą svorių matricą geriausiai atitinka testuojamas paveiksliukas
@@ -218,10 +279,12 @@ namespace IntelektikaPR
             {
                 for (int j = 0; j < testmatrix.GetLength(1); j++)
                 {
-                    if ((SymbolMatrix0[i, j] >= riba) && (testmatrix[i, j] == 1)){ 
-                        scores[0] += 1;                      
+                    if ((SymbolMatrix0[i, j] >= riba) && (testmatrix[i, j] == 1))
+                    {
+                        scores[0] += 1;
                     }
-                    if ((SymbolMatrix1[i, j] >= riba) && (testmatrix[i, j] == 1)){
+                    if ((SymbolMatrix1[i, j] >= riba) && (testmatrix[i, j] == 1))
+                    {
                         scores[1] += 1;
                     }
                     if ((SymbolMatrix2[i, j] >= riba) && (testmatrix[i, j] == 1))
@@ -277,18 +340,18 @@ namespace IntelektikaPR
         public static double[,] processImage(string fpath)
         {
             Bitmap og = new Bitmap(fpath);                                 //Paima iš failo
-            Bitmap conv = new Bitmap(convWidth, convHeigth);               //Sumažina
-            using (Graphics gr = Graphics.FromImage(conv))                 
+            Bitmap conv = new Bitmap(ConvWidth, convHeigth);               //Sumažina
+            using (Graphics gr = Graphics.FromImage(conv))
             {
                 gr.SmoothingMode = SmoothingMode.HighQuality;
                 gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                gr.DrawImage(og, new Rectangle(0, 0, convWidth, convHeigth));
+                gr.DrawImage(og, new Rectangle(0, 0, ConvWidth, convHeigth));
             }
-            conv = ImageToBlackWhite(conv, BW_THRESHOLD);                   //Pilkus pixelius -> juodus/baltus
+            conv = ImageToBlackWhite(conv, BwThreshold);                   //Pilkus pixelius -> juodus/baltus
             conv.RotateFlip(RotateFlipType.Rotate270FlipY);
             double[,] img = ImageToMatrix(conv);                            //konvertuoja į 0/1 matricą
-            //img = CutMatrix(img);                                         //apkarpo -2px nuo kiekvieno krašto
+                                                                            //img = CutMatrix(img);                                         //apkarpo -2px nuo kiekvieno krašto
             return img;
         }
 
@@ -307,11 +370,11 @@ namespace IntelektikaPR
                     if (pixel.GetBrightness() < threshold)
                     {
                         vertices.Add(new Vertex(col, row));
-                        imgOut.SetPixel(col, row, colorBlack);
+                        imgOut.SetPixel(col, row, ColorBlack);
                     }
                     else
                     {
-                        imgOut.SetPixel(col, row, colorWhite);
+                        imgOut.SetPixel(col, row, ColorWhite);
                     }
                 }
             }
@@ -324,17 +387,17 @@ namespace IntelektikaPR
             int height = img.Height;
             int width = img.Width;
 
-            double[,] Matrix = new double[convWidth, convHeigth];
+            double[,] Matrix = new double[ConvWidth, convHeigth];
 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    if (img.GetPixel(i, j).Equals(colorBlack))
+                    if (img.GetPixel(i, j).Equals(ColorBlack))
                     {
                         Matrix[i, j] = 0;
                     }
-                    else if (img.GetPixel(i, j).Equals(colorWhite))
+                    else if (img.GetPixel(i, j).Equals(ColorWhite))
                     {
                         Matrix[i, j] = 1;
                     }
@@ -346,7 +409,7 @@ namespace IntelektikaPR
         //Nukerpa tuščius 2px nuo kiekvieno krašto
         public static double[,] CutMatrix(double[,] matrix)
         {
-            double[,] newmatrix = new double[convWidth - 2, convHeigth - 2];
+            double[,] newmatrix = new double[ConvWidth - 2, convHeigth - 2];
 
             for (int i = 2; i < matrix.GetLength(0) - 2; i++)
             {
@@ -366,7 +429,7 @@ namespace IntelektikaPR
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    Console.Write(string.Format("{0}", matrix[i, j]));
+                    Console.Write($"{matrix[i, j]}");
                 }
                 Console.Write(Environment.NewLine + Environment.NewLine);
             }
@@ -376,14 +439,15 @@ namespace IntelektikaPR
         {
             public Vertex(int i, int j)
             {
-                this.X = i;
-                this.Y = j;
+                X = i;
+                Y = j;
             }
             public int X { get; set; }
             public int Y { get; set; }
-            public string ToString()
+
+            public override string ToString()
             {
-                return string.Format("({0}/{1})", this.X, this.Y);
+                return $"({X}/{Y})";
             }
         }
 

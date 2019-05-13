@@ -12,3 +12,32 @@ C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\Intel
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CoreCompileInputs.cache
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.exe
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.pdb
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.dll.config
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.exe.config
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.exe
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.pdb
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Genetic.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.Core.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Neuro.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Genetic.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Math.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Neuro.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Genetic.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.Core.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Neuro.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Genetic.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Math.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Neuro.xml
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csprojAssemblyReference.cache
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CoreCompileInputs.cache
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CopyComplete
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.exe
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.pdb
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Statistics.dll
+C:\Projects\University\6 Semestras\P176B101 Intelektikos pagrindai\Projektas\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Statistics.xml
