@@ -1,10 +1,10 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Drawing2D;
+using System.Threading;
 
 namespace IntelektikaPR
 {
@@ -27,26 +27,23 @@ namespace IntelektikaPR
 
         //į kokį dydį performuojami paveiksliukai
         private const int ConvWidth = 16;
-        static int convHeigth = 16;
+        private const int ConvHeigth = 16;
 
-        static readonly Color ColorBlack = Color.FromArgb(255, 0, 0, 0);
-        static readonly Color ColorWhite = Color.FromArgb(255, 255, 255, 255);
+        static readonly Color ColorBlack = Color.Black;
+        static readonly Color ColorWhite = Color.White;
         private const double BwThreshold = 0.5;
-        private static readonly List<Vertex> vertices = new List<Vertex>();
+        private static readonly List<Vertex> Vertices = new List<Vertex>();
 
         static void Main(string[] args)
         {
-            Console.Read();
-            NeuralNetworkTests();
-            Console.Read();
+            new Thread(NeuralNetworkTests).Start();
 
-            return;
             List<double> result = XValidation(5, TrainigData);
             Console.WriteLine("Kryžminės patikros rezultatai:");
             int i = 0;
             foreach (double value in result)
             {
-                Console.WriteLine((i + 1) + " kryžminės patikros bendras tikslumas: " + string.Format("{0:F1}", value) + " %");
+                Console.WriteLine((i + 1) + " kryžminės patikros bendras tikslumas: " + $"{value:F1}" + " %");
                 i++;
             }
 
@@ -86,8 +83,19 @@ namespace IntelektikaPR
             var outputData = ReadAllFolders(TestData);
 
             // Print out the result.
-            var correctCount = outputData.Count(testData => testData.Key == network.Compute(testData.Value));
-            Console.WriteLine($"Network accuracy: [{correctCount} / {outputData.Length}] - {(double)correctCount / outputData.Length * 100}%");
+            var correctCount = outputData.GroupBy(k => k.Key).Select(g => new
+            {
+                Index = g.Key,
+                TotalElements = g.Count(),
+                SuccessCount = g.Count(testData => testData.Key == network.Compute(testData.Value))
+            }).ToArray();
+            foreach (var el in correctCount)
+            {
+                Console.WriteLine($"Neural network accuracy for number {el.Index}: {(double)el.SuccessCount / el.TotalElements:P}%");
+            }
+
+            var overallSuccess = correctCount.Sum(e => e.SuccessCount);
+            Console.WriteLine($"Overall neural network accuracy: [{overallSuccess} / {outputData.Length}] - {(double)overallSuccess / outputData.Length:P}");
         }
 
         /// <summary>
@@ -255,7 +263,7 @@ namespace IntelektikaPR
         //Apmokymas. Gaunam svorinę matricą. "Kaip atrodo simbolis".Kuo daugiau kartų tame pikselyje buvo balta - tuo didesnis skaičius
         public static double[,] Training(double[,] trainmatrix, double[,] finalMatrix)
         {
-            double[,] newFinalmatrix = new double[ConvWidth, convHeigth];
+            double[,] newFinalmatrix = new double[ConvWidth, ConvHeigth];
 
             for (int i = 0; i < trainmatrix.GetLength(0); i++)
             {
@@ -340,13 +348,13 @@ namespace IntelektikaPR
         public static double[,] processImage(string fpath)
         {
             Bitmap og = new Bitmap(fpath);                                 //Paima iš failo
-            Bitmap conv = new Bitmap(ConvWidth, convHeigth);               //Sumažina
+            Bitmap conv = new Bitmap(ConvWidth, ConvHeigth);               //Sumažina
             using (Graphics gr = Graphics.FromImage(conv))
             {
                 gr.SmoothingMode = SmoothingMode.HighQuality;
                 gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                gr.DrawImage(og, new Rectangle(0, 0, ConvWidth, convHeigth));
+                gr.DrawImage(og, new Rectangle(0, 0, ConvWidth, ConvHeigth));
             }
             conv = ImageToBlackWhite(conv, BwThreshold);                   //Pilkus pixelius -> juodus/baltus
             conv.RotateFlip(RotateFlipType.Rotate270FlipY);
@@ -369,7 +377,7 @@ namespace IntelektikaPR
                     pixel = imgSrc.GetPixel(col, row);
                     if (pixel.GetBrightness() < threshold)
                     {
-                        vertices.Add(new Vertex(col, row));
+                        Vertices.Add(new Vertex(col, row));
                         imgOut.SetPixel(col, row, ColorBlack);
                     }
                     else
@@ -387,7 +395,7 @@ namespace IntelektikaPR
             int height = img.Height;
             int width = img.Width;
 
-            double[,] Matrix = new double[ConvWidth, convHeigth];
+            double[,] Matrix = new double[ConvWidth, ConvHeigth];
 
             for (int i = 0; i < width; i++)
             {
@@ -409,7 +417,7 @@ namespace IntelektikaPR
         //Nukerpa tuščius 2px nuo kiekvieno krašto
         public static double[,] CutMatrix(double[,] matrix)
         {
-            double[,] newmatrix = new double[ConvWidth - 2, convHeigth - 2];
+            double[,] newmatrix = new double[ConvWidth - 2, ConvHeigth - 2];
 
             for (int i = 2; i < matrix.GetLength(0) - 2; i++)
             {
