@@ -29,8 +29,8 @@ namespace IntelektikaPR
         private const int ConvWidth = 16;
         private const int ConvHeigth = 16;
 
-        static readonly Color ColorBlack = Color.Black;
-        static readonly Color ColorWhite = Color.White;
+        static readonly Color ColorBlack = Color.FromArgb(255, 0, 0, 0);
+        static readonly Color ColorWhite = Color.FromArgb(255, 255, 255, 255);
         private const double BwThreshold = 0.5;
         private static readonly List<Vertex> Vertices = new List<Vertex>();
 
@@ -83,15 +83,16 @@ namespace IntelektikaPR
             var outputData = ReadAllFolders(TestData);
 
             // Print out the result.
-            var correctCount = outputData.GroupBy(k => k.Key).Select(g => new
-            {
-                Index = g.Key,
-                TotalElements = g.Count(),
-                SuccessCount = g.Count(testData => testData.Key == network.Compute(testData.Value))
-            }).ToArray();
+            var correctCount = outputData.GroupBy(k => k.Key)
+                .Select(g => new
+                {
+                    Index = g.Key,
+                    TotalElements = g.Count(),
+                    SuccessCount = g.Count(testData => testData.Key == network.Compute(testData.Value))
+                }).ToArray();
             foreach (var el in correctCount)
             {
-                Console.WriteLine($"Neural network accuracy for number {el.Index}: {(double)el.SuccessCount / el.TotalElements:P}%");
+                Console.WriteLine($"Neural network accuracy for number {el.Index}: {(double)el.SuccessCount / el.TotalElements:P}");
             }
 
             var overallSuccess = correctCount.Sum(e => e.SuccessCount);
@@ -132,7 +133,7 @@ namespace IntelektikaPR
             foreach (var filePath in Directory.EnumerateFiles(folderPath))
             {
 #if DEBUG
-                if (index++ >= 200) continue;
+                //if (index++ >= 200) continue;
 #endif
                 var bitmap = new Bitmap(filePath);
                 yield return new Image(bitmap.Clone(rect, bitmap.PixelFormat));
