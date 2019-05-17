@@ -1,0 +1,666 @@
+Vykdoma 1 kryzmines patikros iteracija.
+Reading input data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Teaching network.
+1%
+2%
+3%
+4%
+5%
+6%
+7%
+8%
+9%
+10%
+11%
+12%
+13%
+14%
+15%
+16%
+17%
+18%
+19%
+20%
+21%
+22%
+23%
+24%
+25%
+26%
+27%
+28%
+29%
+30%
+31%
+32%
+33%
+34%
+35%
+36%
+37%
+38%
+39%
+40%
+Reading output data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Neural network accuracy for number 0: 96.25%
+Neural network accuracy for number 1: 93.25%
+Neural network accuracy for number 2: 64.75%
+Neural network accuracy for number 3: 67.00%
+Neural network accuracy for number 4: 79.75%
+Neural network accuracy for number 5: 96.75%
+Neural network accuracy for number 6: 83.00%
+Neural network accuracy for number 7: 71.50%
+Neural network accuracy for number 8: 93.75%
+Neural network accuracy for number 9: 91.25%
+Overall neural network accuracy: [3349 / 4000] - 83.73%
+Skaitmens 0 atpazinimo tikslumas: 81.8 %
+327 400
+Skaitmens 1 atpazinimo tikslumas: 80.8 %
+323 400
+Skaitmens 2 atpazinimo tikslumas: 35.0 %
+140 400
+Skaitmens 3 atpazinimo tikslumas: 89.0 %
+356 400
+Skaitmens 4 atpazinimo tikslumas: 76.5 %
+306 400
+Skaitmens 5 atpazinimo tikslumas: 89.3 %
+357 400
+Skaitmens 6 atpazinimo tikslumas: 77.5 %
+310 400
+Skaitmens 7 atpazinimo tikslumas: 64.3 %
+257 400
+Skaitmens 8 atpazinimo tikslumas: 85.8 %
+343 400
+Skaitmens 9 atpazinimo tikslumas: 92.0 %
+368 400
+Tikslumas: 77.2 %
+------------------------------------------------------------------------
+
+Vykdoma 2 kryzmines patikros iteracija.
+Reading input data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Teaching network.
+1%
+2%
+3%
+4%
+5%
+6%
+7%
+8%
+9%
+10%
+11%
+12%
+13%
+14%
+15%
+16%
+17%
+18%
+19%
+20%
+21%
+22%
+23%
+24%
+25%
+26%
+27%
+28%
+29%
+30%
+31%
+32%
+33%
+34%
+35%
+36%
+37%
+Reading output data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Neural network accuracy for number 0: 90.00%
+Neural network accuracy for number 1: 99.50%
+Neural network accuracy for number 2: 35.50%
+Neural network accuracy for number 3: 95.00%
+Neural network accuracy for number 4: 98.00%
+Neural network accuracy for number 5: 57.75%
+Neural network accuracy for number 6: 90.75%
+Neural network accuracy for number 7: 99.50%
+Neural network accuracy for number 8: 95.50%
+Neural network accuracy for number 9: 87.50%
+Overall neural network accuracy: [3396 / 4000] - 84.90%
+Skaitmens 0 atpazinimo tikslumas: 51.3 %
+205 400
+Skaitmens 1 atpazinimo tikslumas: 93.3 %
+373 400
+Skaitmens 2 atpazinimo tikslumas: 49.3 %
+197 400
+Skaitmens 3 atpazinimo tikslumas: 88.0 %
+352 400
+Skaitmens 4 atpazinimo tikslumas: 97.0 %
+388 400
+Skaitmens 5 atpazinimo tikslumas: 74.5 %
+298 400
+Skaitmens 6 atpazinimo tikslumas: 92.8 %
+371 400
+Skaitmens 7 atpazinimo tikslumas: 95.0 %
+380 400
+Skaitmens 8 atpazinimo tikslumas: 82.3 %
+329 400
+Skaitmens 9 atpazinimo tikslumas: 98.0 %
+392 400
+Tikslumas: 82.1 %
+------------------------------------------------------------------------
+
+Vykdoma 3 kryzmines patikros iteracija.
+Reading input data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Teaching network.
+1%
+2%
+3%
+4%
+5%
+6%
+7%
+8%
+9%
+10%
+11%
+12%
+13%
+14%
+15%
+16%
+17%
+18%
+19%
+20%
+21%
+22%
+23%
+24%
+25%
+26%
+27%
+28%
+29%
+30%
+31%
+32%
+33%
+34%
+35%
+36%
+37%
+38%
+39%
+40%
+41%
+42%
+43%
+44%
+45%
+46%
+47%
+48%
+49%
+50%
+51%
+52%
+53%
+54%
+55%
+56%
+57%
+58%
+59%
+60%
+61%
+62%
+63%
+64%
+65%
+66%
+67%
+68%
+69%
+70%
+71%
+72%
+73%
+74%
+75%
+76%
+77%
+78%
+79%
+80%
+81%
+82%
+83%
+84%
+85%
+86%
+87%
+88%
+89%
+90%
+91%
+92%
+93%
+94%
+95%
+96%
+97%
+98%
+99%
+100%
+Reading output data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Neural network accuracy for number 0: 84.50%
+Neural network accuracy for number 1: 85.00%
+Neural network accuracy for number 2: 69.50%
+Neural network accuracy for number 3: 36.25%
+Neural network accuracy for number 4: 86.50%
+Neural network accuracy for number 5: 65.00%
+Neural network accuracy for number 6: 64.50%
+Neural network accuracy for number 7: 81.25%
+Neural network accuracy for number 8: 68.00%
+Neural network accuracy for number 9: 87.25%
+Overall neural network accuracy: [2911 / 4000] - 72.78%
+Skaitmens 0 atpazinimo tikslumas: 67.0 %
+268 400
+Skaitmens 1 atpazinimo tikslumas: 86.0 %
+344 400
+Skaitmens 2 atpazinimo tikslumas: 31.0 %
+124 400
+Skaitmens 3 atpazinimo tikslumas: 67.8 %
+271 400
+Skaitmens 4 atpazinimo tikslumas: 84.8 %
+339 400
+Skaitmens 5 atpazinimo tikslumas: 60.0 %
+240 400
+Skaitmens 6 atpazinimo tikslumas: 57.3 %
+229 400
+Skaitmens 7 atpazinimo tikslumas: 35.3 %
+141 400
+Skaitmens 8 atpazinimo tikslumas: 34.8 %
+139 400
+Skaitmens 9 atpazinimo tikslumas: 96.3 %
+385 400
+Tikslumas: 62.0 %
+------------------------------------------------------------------------
+
+Vykdoma 4 kryzmines patikros iteracija.
+Reading input data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Teaching network.
+1%
+2%
+3%
+4%
+5%
+6%
+7%
+8%
+9%
+10%
+11%
+12%
+13%
+14%
+15%
+16%
+17%
+18%
+19%
+20%
+21%
+22%
+23%
+24%
+25%
+26%
+27%
+28%
+29%
+30%
+31%
+32%
+33%
+34%
+35%
+36%
+37%
+38%
+39%
+40%
+41%
+42%
+43%
+44%
+45%
+46%
+47%
+48%
+49%
+50%
+51%
+52%
+53%
+54%
+55%
+56%
+57%
+58%
+59%
+60%
+61%
+62%
+63%
+64%
+65%
+66%
+67%
+68%
+69%
+70%
+71%
+72%
+73%
+74%
+75%
+76%
+77%
+78%
+79%
+80%
+81%
+82%
+83%
+84%
+85%
+86%
+87%
+88%
+89%
+90%
+91%
+92%
+93%
+94%
+95%
+96%
+97%
+98%
+99%
+100%
+Reading output data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Neural network accuracy for number 0: 78.75%
+Neural network accuracy for number 1: 98.00%
+Neural network accuracy for number 2: 89.00%
+Neural network accuracy for number 3: 18.50%
+Neural network accuracy for number 4: 92.00%
+Neural network accuracy for number 5: 91.00%
+Neural network accuracy for number 6: 83.25%
+Neural network accuracy for number 7: 91.25%
+Neural network accuracy for number 8: 95.50%
+Neural network accuracy for number 9: 66.25%
+Overall neural network accuracy: [3214 / 4000] - 80.35%
+Skaitmens 0 atpazinimo tikslumas: 56.3 %
+225 400
+Skaitmens 1 atpazinimo tikslumas: 91.5 %
+366 400
+Skaitmens 2 atpazinimo tikslumas: 37.5 %
+150 400
+Skaitmens 3 atpazinimo tikslumas: 73.3 %
+293 400
+Skaitmens 4 atpazinimo tikslumas: 73.8 %
+295 400
+Skaitmens 5 atpazinimo tikslumas: 69.0 %
+276 400
+Skaitmens 6 atpazinimo tikslumas: 62.5 %
+250 400
+Skaitmens 7 atpazinimo tikslumas: 79.5 %
+318 400
+Skaitmens 8 atpazinimo tikslumas: 74.5 %
+298 400
+Skaitmens 9 atpazinimo tikslumas: 73.8 %
+295 400
+Tikslumas: 69.2 %
+------------------------------------------------------------------------
+
+Vykdoma 5 kryzmines patikros iteracija.
+Reading input data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Teaching network.
+1%
+2%
+3%
+4%
+5%
+6%
+7%
+8%
+9%
+10%
+11%
+12%
+13%
+14%
+15%
+16%
+17%
+18%
+19%
+20%
+21%
+22%
+23%
+24%
+25%
+26%
+27%
+28%
+29%
+30%
+31%
+32%
+33%
+34%
+35%
+36%
+37%
+38%
+39%
+40%
+41%
+42%
+43%
+44%
+45%
+46%
+47%
+48%
+49%
+50%
+51%
+52%
+53%
+54%
+55%
+56%
+57%
+58%
+59%
+60%
+61%
+62%
+63%
+64%
+65%
+66%
+67%
+68%
+69%
+70%
+71%
+72%
+73%
+74%
+75%
+76%
+77%
+78%
+79%
+80%
+81%
+82%
+83%
+84%
+85%
+86%
+87%
+88%
+89%
+90%
+Reading output data.
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+Neural network accuracy for number 0: 99.00%
+Neural network accuracy for number 1: 67.00%
+Neural network accuracy for number 2: 25.50%
+Neural network accuracy for number 3: 30.75%
+Neural network accuracy for number 4: 87.50%
+Neural network accuracy for number 5: 94.75%
+Neural network accuracy for number 6: 93.25%
+Neural network accuracy for number 7: 81.25%
+Neural network accuracy for number 8: 94.00%
+Neural network accuracy for number 9: 85.50%
+Overall neural network accuracy: [3034 / 4000] - 75.85%
+Skaitmens 0 atpazinimo tikslumas: 80.8 %
+323 400
+Skaitmens 1 atpazinimo tikslumas: 23.8 %
+95 400
+Skaitmens 2 atpazinimo tikslumas: 15.8 %
+63 400
+Skaitmens 3 atpazinimo tikslumas: 77.8 %
+311 400
+Skaitmens 4 atpazinimo tikslumas: 79.8 %
+319 400
+Skaitmens 5 atpazinimo tikslumas: 69.5 %
+278 400
+Skaitmens 6 atpazinimo tikslumas: 86.5 %
+346 400
+Skaitmens 7 atpazinimo tikslumas: 25.5 %
+102 400
+Skaitmens 8 atpazinimo tikslumas: 81.8 %
+327 400
+Skaitmens 9 atpazinimo tikslumas: 99.0 %
+396 400
+Tikslumas: 64.0 %
+------------------------------------------------------------------------
+
+Kryzmines patikros rezultatai:
+1 kryzmines patikros bendras tikslumas: 77.2 %
+2 kryzmines patikros bendras tikslumas: 82.1 %
+3 kryzmines patikros bendras tikslumas: 62.0 %
+4 kryzmines patikros bendras tikslumas: 69.2 %
+5 kryzmines patikros bendras tikslumas: 64.0 %
+Bendras tikslumas: 70.9 %
+
+Press any key to continue . . .
