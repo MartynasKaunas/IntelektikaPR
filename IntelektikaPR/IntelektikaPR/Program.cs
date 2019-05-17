@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
@@ -10,7 +10,7 @@ namespace IntelektikaPR
 {
     class Program
     {
-        private static readonly string TrainigData = Path.Combine(Environment.CurrentDirectory, @"Data\Data");
+        private static readonly string TrainingData = Path.Combine(Environment.CurrentDirectory, @"Data\Data");
         private static readonly string TestData = Path.Combine(Environment.CurrentDirectory, @"Data\Test");
 
         //metodo 1 simbolių "heatmap" matricos
@@ -38,26 +38,31 @@ namespace IntelektikaPR
         {
             new Thread(NeuralNetworkTests).Start();
 
-            List<double> result = XValidation(5, TrainigData);
+            
+            List<double> result = XValidation(5, TrainingData);
             Console.WriteLine("Kryžminės patikros rezultatai:");
             int i = 0;
+            double sum = 0;
             foreach (double value in result)
             {
                 Console.WriteLine((i + 1) + " kryžminės patikros bendras tikslumas: " + $"{value:F1}" + " %");
                 i++;
+                sum += value;
             }
-
+            double avg = (double)sum / 5;
+            Console.WriteLine("Bendras tikslumas: " + $"{avg:F1}" + " %");
+            
             Console.ReadLine();
         }
 
         /// <summary>
-        /// Performs the Neural Netowrk tests.
+        /// Performs the Neural Network tests.
         /// </summary>
         public static void NeuralNetworkTests()
         {
             // Read the trainig data.
             Console.WriteLine("Reading input data.");
-            var inputData = ReadAllFolders(TrainigData)
+            var inputData = ReadAllFolders(TrainingData)
                 .OrderBy(o => Guid.NewGuid()) // Scramble the list
                 .ToArray(); // Execute the request
 
@@ -136,7 +141,21 @@ namespace IntelektikaPR
                 //if (index++ >= 200) continue;
 #endif
                 var bitmap = new Bitmap(filePath);
-                yield return new Image(bitmap.Clone(rect, bitmap.PixelFormat));
+
+                Bitmap og = new Bitmap(filePath);                              //Paima iš failo
+                Bitmap conv = new Bitmap(ConvWidth, ConvHeigth);               //Sumažina
+                using (Graphics gr = Graphics.FromImage(conv))
+                {
+                    gr.SmoothingMode = SmoothingMode.HighQuality;
+                    gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    gr.DrawImage(og, new Rectangle(0, 0, ConvWidth, ConvHeigth));
+                }
+                conv = ImageToBlackWhite(conv, BwThreshold);                   //Pilkus pixelius -> juodus/baltus
+                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
+
+                yield return new Image(conv);
+                //yield return new Image(bitmap.Clone(rect, bitmap.PixelFormat));
             }
         }
 
