@@ -36,7 +36,7 @@ namespace IntelektikaPR
 
         static void Main(string[] args)
         {
-            new Thread(NeuralNetworkTests).Start();
+            //new Thread(NeuralNetworkTests).Start();
 
             
             List<double> result = XValidation(5, TrainingData);
@@ -105,6 +105,55 @@ namespace IntelektikaPR
         }
 
         /// <summary>
+        /// Performs the Neural Network tests for cross validation.
+        /// </summary>
+        public static void NeuralNetworkValidation(List<List<string>> trainingList, List<List<string>> testList)
+        {
+            // Read the trainig data.
+            Console.WriteLine("Reading input data.");
+            var inputData = ReadAllImages(trainingList)
+                .OrderBy(o => Guid.NewGuid()) // Scramble the list
+                .ToArray(); // Execute the request
+
+            // Prepare data for the neural network.
+            var outputVector = inputData.Select(d => d.Key)
+                .Select(iValue => // Create a key array, with index of the key having value 1, rest = 0.
+                {
+                    var a = new double[10];
+                    a[iValue] = 1;
+                    return a;
+                }).ToArray();
+            var inputVector = inputData.Select(d => d.Value.ToDoubleArray())
+                .ToArray(); // Create a value array, with having appropriate indexes.
+
+            // Create a neural network
+            var network = new NeuralNetwork(inputVector, outputVector);
+
+            // Execute the learning process
+            network.Teach();
+
+            // Read the test data.
+            Console.WriteLine("Reading output data.");
+            var outputData = ReadAllImages(testList);
+
+            // Print out the result.
+            var correctCount = outputData.GroupBy(k => k.Key)
+                .Select(g => new
+                {
+                    Index = g.Key,
+                    TotalElements = g.Count(),
+                    SuccessCount = g.Count(testData => testData.Key == network.Compute(testData.Value))
+                }).ToArray();
+            foreach (var el in correctCount)
+            {
+                Console.WriteLine($"Neural network accuracy for number {el.Index}: {(double)el.SuccessCount / el.TotalElements:P}");
+            }
+
+            var overallSuccess = correctCount.Sum(e => e.SuccessCount);
+            Console.WriteLine($"Overall neural network accuracy: [{overallSuccess} / {outputData.Length}] - {(double)overallSuccess / outputData.Length:P}");
+        }
+
+        /// <summary>
         /// Reads all of the contents of a given folder and creates an array of Key - Image pairings
         /// </summary>
         /// <returns>An array of Key-Image pairings. Key is int - image's true number</returns>
@@ -125,6 +174,27 @@ namespace IntelektikaPR
         }
 
         /// <summary>
+        /// Reads all of the contents of a given list of lists and creates an array of Key - Image pairings
+        /// </summary>
+        /// <returns>An array of Key-Image pairings. Key is int - image's true number</returns>
+        public static KeyValuePair<int, Image>[] ReadAllImages(List<List<string>> images)
+        {
+            var index = 0;
+            var inputData = Enumerable.Empty<KeyValuePair<int, Image>>();
+            foreach (var list in images)
+            {
+                inputData = inputData.Concat(ReadList(list) // Read the contents and concatinate the image data.
+                        .Select(f => new KeyValuePair<int, Image>(index, f))) // Attach an index to a given image, i.e. 2 = file in directory no.2
+                    .ToArray(); // Execute the request immedietly.
+                index++;
+                Console.WriteLine($"{index * 10}%");
+            }
+
+            return (KeyValuePair<int, Image>[])inputData;
+        }
+
+
+        /// <summary>
         /// Reads folder data for images
         /// </summary>
         /// <param name="folderPath">Path to search for images</param>
@@ -136,6 +206,41 @@ namespace IntelektikaPR
             var index = 0;
 #endif
             foreach (var filePath in Directory.EnumerateFiles(folderPath))
+            {
+#if DEBUG
+                //if (index++ >= 200) continue;
+#endif
+                var bitmap = new Bitmap(filePath);
+
+                Bitmap og = new Bitmap(filePath);                              //Paima iš failo
+                Bitmap conv = new Bitmap(ConvWidth, ConvHeigth);               //Sumažina
+                using (Graphics gr = Graphics.FromImage(conv))
+                {
+                    gr.SmoothingMode = SmoothingMode.HighQuality;
+                    gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    gr.DrawImage(og, new Rectangle(0, 0, ConvWidth, ConvHeigth));
+                }
+                conv = ImageToBlackWhite(conv, BwThreshold);                   //Pilkus pixelius -> juodus/baltus
+                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
+
+                yield return new Image(conv);
+                //yield return new Image(bitmap.Clone(rect, bitmap.PixelFormat));
+            }
+        }
+
+        /// <summary>
+        /// Reads list data for images
+        /// </summary>
+        /// <param name="list">list of image paths</param>
+        /// <returns>List of Images in the given folder.</returns>
+        public static IEnumerable<Image> ReadList(List<string> list)
+        {
+            var rect = new Rectangle(2, 2, 28, 28);
+#if DEBUG
+            var index = 0;
+#endif
+            foreach (var filePath in list)
             {
 #if DEBUG
                 //if (index++ >= 200) continue;
@@ -187,10 +292,15 @@ namespace IntelektikaPR
             {
                 Console.WriteLine("Vykdoma " + (i + 1) + " kryžminės patikros iteracija.");
                 List<List<string>> temp = new List<List<string>>();
+                List<List<string>> test = new List<List<string>>();
                 for (int j = 0; j < 10; j++)
                 {
                     List<string> t = listList[j].ToList();
+                    int step2 = step;
+                    if (i >= dataSetCount - 1) step2 = listList[j].ToList().Count - start;
+                    List<string> t2 = listList[j].GetRange(start,step2).ToList();
                     temp.Add(t);
+                    test.Add(t2);
                 }
                 if (i < dataSetCount - 1)
                 {
@@ -220,6 +330,8 @@ namespace IntelektikaPR
                 Digit7 = TrainSymbolMatrix(Digit7, temp[7]);
                 Digit8 = TrainSymbolMatrix(Digit8, temp[8]);
                 Digit9 = TrainSymbolMatrix(Digit9, temp[9]);
+
+                NeuralNetworkValidation(temp, test);
 
                 int corr = 0; // teisingų spėjimų kiekis
                 int count = 0; // bendras spėjimų kiekis

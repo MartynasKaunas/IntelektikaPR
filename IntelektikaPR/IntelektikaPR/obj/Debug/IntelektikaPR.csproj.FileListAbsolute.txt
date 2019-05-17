@@ -63,3 +63,32 @@ C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\Intel
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Math.xml
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Neuro.xml
 C:\Users\User\Desktop\Uni\6 Semestras\Intelektikos pagrindai\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CopyComplete
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.dll.config
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.exe.config
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.exe
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\IntelektikaPR.pdb
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Genetic.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.Core.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Neuro.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Statistics.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Genetic.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Math.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Neuro.dll
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Genetic.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Math.Core.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Neuro.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\Accord.Statistics.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Genetic.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Math.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\bin\Debug\AForge.Neuro.xml
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csprojAssemblyReference.cache
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CoreCompileInputs.cache
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.csproj.CopyComplete
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.exe
+C:\Users\peciu\OneDrive\Documents\GitHub\IntelektikaPR\IntelektikaPR\IntelektikaPR\obj\Debug\IntelektikaPR.pdb
