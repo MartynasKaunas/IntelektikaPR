@@ -343,7 +343,7 @@ namespace IntelektikaPR
                 {
                     corr = 0; // teisingų spėjimų kiekis
                     count = 0; // bendras spėjimų kiekis
-                               // Ciklas keliauja per j - tojo skaitmens paveikslėlių sąrašą
+                    // Ciklas keliauja per j - tojo skaitmens paveikslėlių sąrašą
                     int step2 = step;
                     if (i >= dataSetCount - 1) step2 = listList[j].ToList().Count - start;
                     foreach (string fpath in listList[j].GetRange(start, step2))
