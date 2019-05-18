@@ -313,64 +313,6 @@ namespace IntelektikaPR
         }
 
         /// <summary>
-        /// Reads all of the contents of a given folder and creates an array of Key - Image pairings
-        /// </summary>
-        /// <returns>An array of Key-Image pairings. Key is int - image's true number</returns>
-        public static KeyValuePair<int, Image>[] ReadAllFolders(string folderPath)
-        {
-            var index = 0;
-            var inputData = Enumerable.Empty<KeyValuePair<int, Image>>();
-            foreach (var directory in Directory.EnumerateDirectories(folderPath))
-            {
-                inputData = inputData.Concat(ReadFolder(directory) // Read the contents and concatinate the image data.
-                        .Select(f => new KeyValuePair<int, Image>(index, f))) // Attach an index to a given image, i.e. 2 = file in directory no.2
-                    .ToArray(); // Execute the request immedietly.
-                index++;
-                Console.WriteLine($"{index * 10}%");
-            }
-
-            return (KeyValuePair<int, Image>[])inputData;
-        }
-
-        /// <summary>
-        /// Reads folder data for images
-        /// </summary>
-        /// <param name="folderPath">Path to search for images</param>
-        /// <returns>List of Images in the given folder.</returns>
-        public static IEnumerable<Image> ReadFolder(string folderPath)
-        {
-            var rect = new Rectangle(2, 2, 28, 28);
-
-            #if DEBUG
-            var index = 0;
-            #endif
-
-            foreach (var filePath in Directory.EnumerateFiles(folderPath))
-            {
-                #if DEBUG
-                //if (index++ >= 200) continue;
-                #endif
-
-                var bitmap = new Bitmap(filePath);
-
-                Bitmap og = new Bitmap(filePath);                              //Paima iš failo
-                Bitmap conv = new Bitmap(ConvWidth, ConvHeigth);               //Sumažina
-                using (Graphics gr = Graphics.FromImage(conv))
-                {
-                    gr.SmoothingMode = SmoothingMode.HighQuality;
-                    gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    gr.DrawImage(og, new Rectangle(0, 0, ConvWidth, ConvHeigth));
-                }
-                conv = ImageToBlackWhite(conv, BwThreshold);                   //Pilkus pixelius -> juodus/baltus
-                conv.RotateFlip(RotateFlipType.Rotate270FlipY);
-
-                yield return new Image(conv);
-                //yield return new Image(bitmap.Clone(rect, bitmap.PixelFormat));
-            }
-        }
-
-        /// <summary>
         /// Reads all of the contents of a given list of lists and creates an array of Key - Image pairings
         /// </summary>
         /// <returns>An array of Key-Image pairings. Key is int - image's true number</returns>
